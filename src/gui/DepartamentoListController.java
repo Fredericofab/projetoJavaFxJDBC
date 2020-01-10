@@ -45,7 +45,8 @@ public class DepartamentoListController implements Initializable {
 	public void onBtIncluirAction(ActionEvent evento) {
 		Stage parentStage = Utilitarios.atualStage(evento);
 		String caminhoDaView = "/gui/DepartamentoForm.fxml";
-		criarDialogoForm(caminhoDaView , parentStage);;
+		Departamento objeto = new Departamento();
+		criarDialogoForm(objeto, caminhoDaView , parentStage);;
 	}
 	
 	@Override
@@ -70,10 +71,15 @@ public class DepartamentoListController implements Initializable {
 		tableViewDepartamento.setItems(obsLista);
 	}
 	
-	private void criarDialogoForm(String caminhoDaView, Stage parentStage ) {
+	private void criarDialogoForm(Departamento objeto, String caminhoDaView, Stage parentStage ) {
 		try {
 			FXMLLoader loader = new FXMLLoader(getClass().getResource(caminhoDaView));
 			Pane pane = loader.load();
+			
+			DepartamentoFormController controller = loader.getController();
+			controller.setDepartamento(objeto);
+			controller.setDepartamentoService(servico);
+			controller.atualizarDadosForm();
 			
 			Stage dialogoStage = new Stage();
 			dialogoStage.setTitle("Informe os Dados do Departamento");
