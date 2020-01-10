@@ -16,6 +16,7 @@ import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.MenuItem;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.layout.VBox;
+import model.entities.Departamento;
 import model.services.DepartamentoService;
 
 public class MainViewController implements Initializable {
@@ -33,15 +34,19 @@ public class MainViewController implements Initializable {
 	}
 	@FXML
 	public void onMenuItemDepartamentoAction() {
-		carregarView("/gui/DepartamentoList.fxml", 
+		String caminhoDaView = "/gui/DepartamentoList.fxml";
+		Consumer<DepartamentoListController> acaoDeInicializao = 
 				(DepartamentoListController controller) -> {
 					controller.setDepartamentoService(new DepartamentoService());
 					controller.atualizarTableView();					
-				});
+				};
+		carregarView(caminhoDaView,acaoDeInicializao);
 	}
 	@FXML
 	public void onMenuItemSobreAction() {
-		carregarView("/gui/Sobre.fxml", x -> {});
+		String caminhoDaView = "/gui/Sobre.fxml";
+		Consumer<Initializable> acaoDeInicializacao = x -> {};
+		carregarView(caminhoDaView, acaoDeInicializacao);
 	}
 
 	@Override

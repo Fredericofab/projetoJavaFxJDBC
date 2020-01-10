@@ -42,7 +42,7 @@ public class DepartamentoListController implements Initializable {
 	private Button btIncluir;
 
 	@FXML
-	public void onBtIncluir(ActionEvent evento) {
+	public void onBtIncluirAction(ActionEvent evento) {
 		Stage parentStage = Utilitarios.atualStage(evento);
 		String caminhoDaView = "/gui/DepartamentoForm.fxml";
 		criarDialogoForm(caminhoDaView , parentStage);;
@@ -78,8 +78,8 @@ public class DepartamentoListController implements Initializable {
 			Stage dialogoStage = new Stage();
 			dialogoStage.setTitle("Informe os Dados do Departamento");
 			dialogoStage.setScene(new Scene(pane));
-			dialogoStage.setResizable(false); //nao vai poder ser redimensionada
-			dialogoStage.initOwner(parentStage); //quem chamou
+			dialogoStage.setResizable(false); 
+			dialogoStage.initOwner(parentStage); 
 			dialogoStage.initModality(Modality.WINDOW_MODAL);
 			dialogoStage.showAndWait();
 		}
