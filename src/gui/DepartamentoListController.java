@@ -2,10 +2,12 @@ package gui;
 
 import java.io.IOException;
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.ResourceBundle;
 
 import application.Main;
+import gui.listeners.DadosAlteradosListener;
 import gui.util.Alertas;
 import gui.util.Utilitarios;
 import javafx.collections.FXCollections;
@@ -26,11 +28,13 @@ import javafx.stage.Stage;
 import model.entities.Departamento;
 import model.services.DepartamentoService;
 
-public class DepartamentoListController implements Initializable {
+public class DepartamentoListController implements Initializable, DadosAlteradosListener {
 
 	private DepartamentoService servico;
 	
 	private ObservableList<Departamento> obsLista;
+	
+	private List<DadosAlteradosListener> alteracaoDeDadosListeners = new ArrayList();
 	
 	@FXML
 	private TableView<Departamento> tableViewDepartamento;
@@ -62,6 +66,10 @@ public class DepartamentoListController implements Initializable {
 		this.servico = servico;
 	}
 	
+	public void seInscreverEmAlteracaoDeDadosListener(DadosAlteradosListener ouvinte) {
+		alteracaoDeDadosListeners.add(ouvinte);
+	}
+	
 	public void atualizarTableView() {
 		if (servico == null ) {
 			throw new IllegalStateException("O service foi passado nulo!");
@@ -79,6 +87,7 @@ public class DepartamentoListController implements Initializable {
 			DepartamentoFormController controller = loader.getController();
 			controller.setDepartamento(objeto);
 			controller.setDepartamentoService(servico);
+			controller.inscreverDadosAlteradosListener(this);
 			controller.atualizarDadosForm();
 			
 			Stage dialogoStage = new Stage();
@@ -92,5 +101,10 @@ public class DepartamentoListController implements Initializable {
 		catch (IOException e) {
 			Alertas.mostrarAlertas("IOException", "Erro carregando View", e.getMessage(), AlertType.ERROR);
 		}
+	}
+
+	@Override
+	public void onDadosAlterados() {
+		atualizarTableView();
 	}
 }
