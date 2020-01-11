@@ -3,7 +3,9 @@ package gui;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.ResourceBundle;
+import java.util.Set;
 
 import db.DbException;
 import gui.listeners.DadosAlteradosListener;
@@ -18,6 +20,7 @@ import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import model.entities.Departamento;
+import model.exceptions.ValidacaoException;
 import model.services.DepartamentoService;
 
 public class DepartamentoFormController implements Initializable {
@@ -63,6 +66,9 @@ public class DepartamentoFormController implements Initializable {
 			notificarDadosAlteradosListeners();
 			Utilitarios.atualStage(evento).close();
 		}
+		catch (ValidacaoException e) {
+			setMensagensErros(e.getErros());
+		}
 		catch (DbException e) {
 			Alertas.mostrarAlertas("Erro Salvando Objeto", null, e.getMessage(),AlertType.ERROR);
 		}
@@ -75,8 +81,18 @@ public class DepartamentoFormController implements Initializable {
 	}
 	private Departamento getDadosDoForm() {
 		Departamento objeto = new Departamento();
+		ValidacaoException excecao =new ValidacaoException("Erros de validacao");
+		
 		objeto.setId(Utilitarios.tentarConverterParaInt(txtId.getText()));
+		
+		if (txtDescricao.getText() == null || txtDescricao.getText().trim().equals("")) {
+			excecao.adicionarErro("descricao", "O campo nao pode ser vazio");
+		}
 		objeto.setDescricao(txtDescricao.getText());
+		
+		if (excecao.getErros().size() > 0) {
+			throw excecao;
+		}
 		return objeto;
 	}
 	@FXML
@@ -96,5 +112,33 @@ public class DepartamentoFormController implements Initializable {
 		}
 		txtId.setText(String.valueOf(entidade.getId()));
 		txtDescricao.setText(entidade.getDescricao());
+	}
+	
+	private void setMensagensErros(Map<String, String> erros) {
+		Set<String> campos = erros.keySet();
+		if (campos.contains("descricao")) {
+			labelErroDescricao.setText(erros.get("descricao"));
+		}
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
 	}
 }

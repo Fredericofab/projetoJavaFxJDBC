@@ -10,6 +10,7 @@ import java.util.List;
 
 import db.DB;
 import db.DbException;
+import db.DbIntegridadeException;
 import model.dao.DepartamentoDao;
 import model.entities.Departamento;
 
@@ -67,7 +68,7 @@ public class DepartamentoDaoJDBC implements DepartamentoDao {
 			st.setInt(1, id);
 			st.executeUpdate();
 		} catch (SQLException e) {
-			throw new DbException("erro na delecao " + e.getMessage());
+			throw new DbIntegridadeException("erro na delecao " + e.getMessage());
 		}
 		finally {
 			DB.fecharStatement(st);
