@@ -203,7 +203,12 @@ public class VendedorDaoJDBC implements VendedorDao {
 		vendedor.setId(rs.getInt("Id"));
 		vendedor.setNome(rs.getString("name"));
 		vendedor.setEmail(rs.getNString("email"));
-		vendedor.setAniversario(rs.getDate("BirthDate"));
+		
+//		O Estanciamento abaixo, utiliza java.sql.Date que tem um bug quando usamos o javafx
+//		vendedor.setAniversario(rs.getDate("BirthDate"));
+//		Usar a forma abaixo, que utiliza o java.util.Date
+		vendedor.setAniversario(new java.util.Date(rs.getTimestamp("BirthDate").getTime()));
+
 		vendedor.setSalarioBase(rs.getDouble("BaseSalary"));
 		vendedor.setDepartamento(departamento);
 		return vendedor;

@@ -1,8 +1,11 @@
 package gui;
 
 import java.net.URL;
+import java.time.LocalDate;
+import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.ResourceBundle;
 import java.util.Set;
@@ -17,33 +20,46 @@ import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Button;
+import javafx.scene.control.DatePicker;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
-import model.entities.Departamento;
+import model.entities.Vendedor;
 import model.exceptions.ValidacaoException;
-import model.services.DepartamentoService;
+import model.services.VendedorService;
 
-public class DepartamentoFormController implements Initializable {
+public class VendedorFormController implements Initializable {
 
-	private Departamento entidade;
-	private DepartamentoService servico;
+	private Vendedor entidade;
+	private VendedorService servico;
 	private List<DadosAlteradosListener> dadosAlteradosListeners = new ArrayList<>();
 	
 	@FXML
 	private TextField txtId;
 	@FXML
-	private TextField txtDescricao;
+	private TextField txtNome;
 	@FXML
-	private Label labelErroDescricao;
+	private TextField txtEmail;
+	@FXML
+	private DatePicker dpAniversario;
+	@FXML
+	private TextField txtSalarioBase;
+	@FXML
+	private Label labelErroNome;
+	@FXML
+	private Label labelErroEmail;
+	@FXML
+	private Label labelErroAniversario;
+	@FXML
+	private Label labelErroSalarioBase;
 	@FXML
 	private Button btSalvar;
 	@FXML
 	private Button btCancelar;
 
-	public void setDepartamento(Departamento entidade) {
+	public void setVendedor(Vendedor entidade) {
 		this.entidade = entidade;
 	}
-	public void setDepartamentoService(DepartamentoService servico) {
+	public void setVendedorService(VendedorService servico) {
 		this.servico = servico;
 	}
 	
@@ -79,16 +95,16 @@ public class DepartamentoFormController implements Initializable {
 		}
 		
 	}
-	private Departamento getDadosDoForm() {
-		Departamento objeto = new Departamento();
+	private Vendedor getDadosDoForm() {
+		Vendedor objeto = new Vendedor();
 		ValidacaoException excecao =new ValidacaoException("Erros de validacao");
 		
 		objeto.setId(Utilitarios.tentarConverterParaInt(txtId.getText()));
 		
-		if (txtDescricao.getText() == null || txtDescricao.getText().trim().equals("")) {
-			excecao.adicionarErro("descricao", "O campo nao pode ser vazio");
+		if (txtNome.getText() == null || txtNome.getText().trim().equals("")) {
+			excecao.adicionarErro("nome", "O campo nao pode ser vazio");
 		}
-		objeto.setDescricao(txtDescricao.getText());
+		objeto.setNome(txtNome.getText());
 		
 		if (excecao.getErros().size() > 0) {
 			throw excecao;
@@ -102,22 +118,37 @@ public class DepartamentoFormController implements Initializable {
 	
 	@Override
 	public void initialize(URL url, ResourceBundle rb) {
-		Restricoes.validaTextFieldInteiro(txtId);
-		Restricoes.validaTextFieldTamanhoMax(txtDescricao, 30);
+		initializeNodes();
 	}
 
+	private void initializeNodes() {
+		Restricoes.validaTextFieldInteiro(txtId);
+		Restricoes.validaTextFieldTamanhoMax(txtNome, 60);
+		Restricoes.validaTextFieldDouble(txtSalarioBase);
+		Restricoes.validaTextFieldTamanhoMax(txtEmail, 50);
+		Utilitarios.formatarDatePicker(dpAniversario, "dd/MM/yyyy");
+	}
 	public void atualizarDadosForm() {
 		if ( entidade == null ) {
 			throw new IllegalStateException("Entidade Esta Vazia");
 		}
 		txtId.setText(String.valueOf(entidade.getId()));
-		txtDescricao.setText(entidade.getDescricao());
+		txtNome.setText(entidade.getNome());
+		txtEmail.setText(entidade.getEmail());
+		
+		Locale.setDefault(Locale.US);
+		txtSalarioBase.setText(String.format("%.2f", entidade.getSalarioBase()));
+		
+//		dpAniversario.setValue(entidade.getAniversario()); erro de compilação Date x LocalDate
+		if ( entidade.getAniversario() != null ) {
+			dpAniversario.setValue(LocalDate.ofInstant(entidade.getAniversario().toInstant(),ZoneId.systemDefault()));
+		}
 	}
 	
 	private void setMensagensErros(Map<String, String> erros) {
 		Set<String> campos = erros.keySet();
-		if (campos.contains("descricao")) {
-			labelErroDescricao.setText(erros.get("descricao"));
+		if (campos.contains("nome")) {
+			labelErroNome.setText(erros.get("nome"));
 		}
 	}
 }
