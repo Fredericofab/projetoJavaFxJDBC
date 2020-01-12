@@ -28,6 +28,14 @@ public class Utilitarios {
 		}
 	}
 
+	public static Double tentarConverterParaDouble(String x) {
+		try {
+			return Double.parseDouble(x);
+		} catch (NumberFormatException e) {
+			return null;
+		}
+	}
+
 	public static <T> void formatarTableColumnDate(TableColumn<T, Date> tableColumn, String format) {
 		tableColumn.setCellFactory(column -> {
 			TableCell<T, Date> cell = new TableCell<T, Date>() {

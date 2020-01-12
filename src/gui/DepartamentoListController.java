@@ -98,7 +98,7 @@ public class DepartamentoListController implements Initializable, DadosAlterados
 
 			DepartamentoFormController controller = loader.getController();
 			controller.setDepartamento(objeto);
-			controller.setDepartamentoService(servico);
+			controller.setDepartamentoService(new DepartamentoService());
 			controller.inscreverDadosAlteradosListener(this);
 			controller.atualizarDadosForm();
 
@@ -110,6 +110,7 @@ public class DepartamentoListController implements Initializable, DadosAlterados
 			dialogoStage.initModality(Modality.WINDOW_MODAL);
 			dialogoStage.showAndWait();
 		} catch (IOException e) {
+			e.printStackTrace();
 			Alertas.mostrarAlertas("IOException", "Erro carregando View", e.getMessage(), AlertType.ERROR);
 		}
 	}
